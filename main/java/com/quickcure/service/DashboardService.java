@@ -8,97 +8,94 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class DashboardService {
 
     public int getTotalOrders() {
-        String sql = "SELECT COUNT(*) FROM order";
+        String sql = "SELECT COUNT(*) FROM orders";
         try (Connection conn = DbConfig.getDbConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
-            if (rs.next()) {
-                int totalOrders = rs.getInt(1);
-                return totalOrders >= 0 ? totalOrders : 0;
-            }
+            return rs.next() ? rs.getInt(1) : 0;
         } catch (SQLException | ClassNotFoundException e) {
-            // Silently return 0 on error
+            e.printStackTrace();
+            throw new RuntimeException("Failed to fetch total orders", e);
         }
-        return 0;
     }
 
     public double getTotalRevenue() {
-        String sql = "SELECT SUM(Total_amount) FROM order";
+        String sql = "SELECT SUM(Orders_total_amount) FROM orders";
         try (Connection conn = DbConfig.getDbConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
-            if (rs.next()) {
-                double totalRevenue = rs.getDouble(1);
-                return totalRevenue >= 0 ? totalRevenue : 0.0;
-            }
+            return rs.next() ? rs.getDouble(1) : 0.0;
         } catch (SQLException | ClassNotFoundException e) {
-            // Silently return 0 on error
+            e.printStackTrace();
+            throw new RuntimeException("Failed to fetch total revenue", e);
         }
-        return 0.0;
     }
 
-    public int getActiveCustomers() {
-        String sql = "SELECT COUNT(*) FROM user WHERE active_status = true";
+    public int getActiveCustomers(int days) {
+        String sql = "SELECT COUNT(DISTINCT u.Users_id) " +
+                     "FROM users u " +
+                     "JOIN users_orders uo ON u.Users_id = uo.Users_id " +
+                     "JOIN orders o ON uo.Orders_id = o.Orders_id " +
+                     "WHERE o.Orders_date >= DATE_SUB(CURRENT_DATE, INTERVAL ? DAY)";
         try (Connection conn = DbConfig.getDbConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
-            if (rs.next()) {
-                int activeCustomers = rs.getInt(1);
-                return activeCustomers >= 0 ? activeCustomers : 0;
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, days);
+            try (ResultSet rs = stmt.executeQuery()) {
+                return rs.next() ? rs.getInt(1) : 0;
             }
         } catch (SQLException | ClassNotFoundException e) {
-            // Silently return 0 on error
+            e.printStackTrace();
+            throw new RuntimeException("Failed to fetch active customers", e);
         }
-        return 0;
+    }
+
+    // Overload for default 30 days
+    public int getActiveCustomers() {
+        return getActiveCustomers(30);
     }
 
     public int getLowStockItems() {
-        String sql = "SELECT COUNT(*) FROM product WHERE Stock_status < 10";
+        String sql = "SELECT COUNT(*) FROM product WHERE Product_stock_status = 'low'";
         try (Connection conn = DbConfig.getDbConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
-            if (rs.next()) {
-                int lowStockItems = rs.getInt(1);
-                return lowStockItems >= 0 ? lowStockItems : 0;
-            }
+            return rs.next() ? rs.getInt(1) : 0;
         } catch (SQLException | ClassNotFoundException e) {
-            // Silently return 0 on error
+            e.printStackTrace();
+            throw new RuntimeException("Failed to fetch low stock items", e);
         }
-        return 0;
     }
 
     public Map<String, Double> getMonthlySales() {
-        Map<String, Double> monthlySales = new HashMap<>();
-        String sql = "SELECT MONTHNAME(Order_date) AS month, SUM(Total_amount) AS total " +
-                     "FROM order GROUP BY MONTH(Order_date)";
+        Map<String, Double> monthlySales = new LinkedHashMap<>();
+        String sql = "SELECT DATE_FORMAT(o.Orders_date, '%Y-%m') AS month, SUM(o.Orders_total_amount) AS total " +
+                     "FROM orders o " +
+                     "GROUP BY month ORDER BY month ASC";
         try (Connection conn = DbConfig.getDbConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
-                String month = rs.getString("month");
-                double total = rs.getDouble("total");
-                if (total >= 0) {
-                    monthlySales.put(month, total);
-                }
+                monthlySales.put(rs.getString("month"), rs.getDouble("total"));
             }
             return monthlySales;
         } catch (SQLException | ClassNotFoundException e) {
-            return Collections.emptyMap();
+            e.printStackTrace();
+            throw new RuntimeException("Failed to fetch monthly sales", e);
         }
     }
 
     public List<Product> getTopProducts() {
         List<Product> topProducts = new ArrayList<>();
-        String sql = "SELECT Product_id, Product_name, Stock_status FROM products ORDER BY Stock_status DESC LIMIT 5";
+        String sql = "SELECT p.Product_id, p.Product_name, COUNT(op.Product_id) as sales " +
+                     "FROM product p " +
+                     "LEFT JOIN orders_product op ON p.Product_id = op.Product_id " +
+                     "GROUP BY p.Product_id, p.Product_name " +
+                     "ORDER BY sales DESC LIMIT 5";
         try (Connection conn = DbConfig.getDbConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
@@ -106,31 +103,40 @@ public class DashboardService {
                 Product product = new Product();
                 product.setId(rs.getInt("Product_id"));
                 product.setName(rs.getString("Product_name"));
-                product.setSales(rs.getInt("Stock_status"));
+                product.setSales(rs.getInt("sales"));
                 topProducts.add(product);
             }
             return topProducts;
         } catch (SQLException | ClassNotFoundException e) {
-            return Collections.emptyList();
+            e.printStackTrace();
+            throw new RuntimeException("Failed to fetch top products", e);
         }
     }
 
     public List<Order> getRecentOrders() {
         List<Order> recentOrders = new ArrayList<>();
-        String sql = "SELECT Order_id, Total_amount, Order_date FROM orders ORDER BY Order_date DESC LIMIT 5";
+        String sql = "SELECT o.Orders_id, o.Orders_total_amount, o.Orders_date, " +
+                     "CONCAT(u.First_name, ' ', u.Last_name) AS customer_name " +
+                     "FROM orders o " +
+                     "JOIN users_orders uo ON o.Orders_id = uo.Orders_id " +
+                     "JOIN users u ON uo.Users_id = u.Users_id " +
+                     "ORDER BY o.Orders_date DESC LIMIT 5";
+        
         try (Connection conn = DbConfig.getDbConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
                 Order order = new Order();
-                order.setId(rs.getInt("Order_id"));
-                order.setTotalAmount(rs.getDouble("Total_amount"));
-                order.setOrderDate(rs.getDate("Order_date"));
+                order.setId(rs.getInt("Orders_id"));
+                order.setTotalAmount(rs.getDouble("Orders_total_amount"));
+                order.setOrderDate(rs.getDate("Orders_date"));
+                order.setCustomerName(rs.getString("customer_name"));
                 recentOrders.add(order);
             }
             return recentOrders;
         } catch (SQLException | ClassNotFoundException e) {
-            return Collections.emptyList();
+            e.printStackTrace();
+            throw new RuntimeException("Failed to fetch recent orders", e);
         }
     }
 }

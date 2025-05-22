@@ -13,103 +13,16 @@ body {
     color: #333;
 }
 
-/* Sidebar */
-.sidebar-checkbox {
-    display: none;
-}
-
-.sidebar {
-    background-color: #0059b3;
-    width: 200px;
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    padding: 20px;
-    z-index: 1000;
-    transition: width 0.3s ease;
-    overflow: hidden;
-}
-
-.sidebar .logo {
-    background-color: #fff;
-    color: #0059b3;
-    font-size: 24px;
-    font-weight: bold;
-    padding: 10px;
-    text-align: center;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
-}
-
-.toggle-section {
-    display: flex;
-    align-items: center;
-    gap: 70px;
-    margin-bottom: 20px;
-    background-color: darkblue;
-    padding: 10px;
-}
-
-.toggle-label {
-    color: #fff;
-    font-size: 18px;
-    font-weight: bold;
-}
-
-.toggle-btn {
-    font-size: 24px;
-    color: #fff;
-    cursor: pointer;
-}
-
-.sidebar ul {
-    list-style: none;
-    flex-grow: 1;
-}
-
-.sidebar a {
-    color: #fff;
-    text-decoration: none;
-    display: block;
-    padding: 10px;
-    margin-bottom: 5px;
-    border-radius: 4px;
-}
-
-.sidebar a:hover {
-    background-color: #003f7f;
-}
-
-.sidebar a.active {
-    background-color: #003f7f;
-}
-
-/* Collapsible Sidebar */
-.sidebar-checkbox:checked ~ .sidebar {
-    width: 60px;
-}
-
-.sidebar-checkbox:checked ~ .sidebar .logo,
-.sidebar-checkbox:checked ~ .sidebar ul a:not(.toggle-btn),
-.sidebar-checkbox:checked ~ .sidebar .toggle-label {
-    display: none;
-}
-
-.sidebar-checkbox:checked ~ .main-content {
-    margin-left: 60px;
-}
-
-/* Main Content */
+/*Main Content*/
 .main-content {
-    margin-left: 200px;
+    margin-left: 250px;
     padding: 20px;
     transition: margin-left 0.3s ease;
 }
 
 /* Header */
 .header {
-    background-color: #fff;
+    background-color: #FFFFFF; /* White */
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -118,30 +31,7 @@ body {
     position: sticky;
     top: 0;
     z-index: 900;
-}
-
-.search-bar {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex: 1;
-    max-width: 400px;
-}
-
-.search-bar input {
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    width: 100%;
-}
-
-.search-btn {
-    background-color: #0059b3;
-    color: #fff;
-    border: none;
-    padding: 8px;
-    border-radius: 4px;
-    cursor: pointer;
+    border-radius: 8px;
 }
 
 .user-menu {
@@ -155,6 +45,79 @@ body {
     font-size: 96px;
     color: #0059b3;
     cursor: pointer;
+}
+
+.remove-product-btn{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #ff4d4d;
+    color: #fff;
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+    margin-top: 10px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    width: 140px;
+    margin-bottom: 10px;
+}
+
+.remove-product-btn i{
+    font-size: 16px;
+}
+
+.remove-product-btn:hover {
+    transform: translateY(-2px);
+}
+
+.update-product-btn{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #48b74e;
+    color: #fff;
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+    margin-top: 10px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    width: 140px;
+    margin-bottom: 10px;
+}
+
+.update-product-btn i{
+    font-size: 16px;
+}
+
+.update-product-btn:hover {
+    transform: translateY(-2px);
+}
+/* Add Products Button */
+.add-product-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #0059b3;
+    color: #fff;
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+    margin-top: 10px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    width: 140px;
+    margin-bottom: 10px;
+}
+
+.add-product-btn i {
+    font-size: 16px;
+}
+
+.add-product-btn:hover {
+    background-color: #003f7f;
+    transform: translateY(-2px);
 }
 
 .user-dropdown {
@@ -213,6 +176,7 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     flex: 1;
     text-align: center;
+    margin-top: 30px;
 }
 
 .stat-card h3 {
@@ -269,13 +233,13 @@ body {
 }
 
 .graph-placeholder {
-    max-width: 600px;
-    margin: 0 auto;
+    width: 100%; /* Stretch to full width of parent */
+    margin: 0 auto; /* Center if needed, but width will respect parent */
 }
 
 canvas {
-    width: 100% !important;
-    height: 300px !important;
+    width: 100% !important; /* Ensure canvas fills the placeholder */
+    height: 100% !important; /* Ensure canvas fills the height */
 }
 
 /* Top Products */

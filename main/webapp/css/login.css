@@ -1,0 +1,218 @@
+@charset "UTF-8";
+/* Reset default margins, padding, and set box-sizing */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* Body styling with wavy background */
+body {
+    position: relative;
+    min-height: 100vh;
+    overflow: hidden;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+/* Wave container using pseudo-elements */
+body::before,
+body::after {
+    --wave-height: 40vh; /* Adjustable wave height */
+    --wave-opacity: 0.2; /* Default opacity for first wave */
+
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 200%; /* Double width for smooth scrolling animation */
+    height: var(--wave-height);
+    background: rgba(71, 182, 201, var(--wave-opacity));
+    z-index: 0;
+}
+
+/* First wave layer */
+body::before {
+    --wave-opacity: 0.2;
+    clip-path: polygon(
+        0% 70%,
+        10% 40%,
+        20% 60%,
+        30% 30%,
+        40% 50%,
+        50% 20%,
+        60% 50%,
+        70% 30%,
+        80% 60%,
+        90% 40%,
+        100% 70%,
+        100% 100%,
+        0% 100%
+    );
+    animation: wave-slide 12s linear infinite;
+}
+
+/* Second wave layer (offset for depth) */
+body::after {
+    --wave-opacity: 0.3;
+    clip-path: polygon(
+        0% 60%,
+        10% 30%,
+        20% 50%,
+        30% 20%,
+        40% 40%,
+        50% 10%,
+        60% 40%,
+        70% 20%,
+        80% 50%,
+        90% 30%,
+        100% 60%,
+        100% 100%,
+        0% 100%
+    );
+    animation: wave-slide 12s linear infinite reverse;
+}
+
+/* Animation for the wave effect */
+@keyframes wave-slide {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-50%); /* Moves half the width for seamless looping */
+    }
+}
+
+.welcome{
+    animation: typing 1.5s steps(116) forwards, blink 1s step-end infinite;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.subtitle{
+    animation: typing 1s steps(120) forwards, blink 1s step-end infinite;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.sign-up-link{
+    animation: typing 1s steps(150) forwards, blink 1s step-end infinite;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+@keyframes typing {
+    from{
+        width: 0;
+    }
+    to{
+        width: 100%;
+    }
+}
+
+@keyframes blink {
+    from, to {
+      border-color: red;
+    }
+    50% {
+      border-color: black;
+    }
+  }
+
+/* Main container for the login page, centers the form */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    position: relative;
+    z-index: 1; /* Ensure the form is above the waves */
+    opacity: 0;
+    animation: fadeIn 0.7s ease-in forwards;
+}
+
+
+@keyframes fadeIn {
+    from{
+        opacity: 0; transform: translateY(10);
+    }
+    to{
+        opacity: 1; transform: translateY(0);
+    }
+}
+
+
+/* Form container styling */
+.form-container {
+    background-color: rgba(255, 255, 255, 0.6); /* Semi-transparent white to show background */
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+    width: 100%;
+    max-width: 400px;
+    margin: 0 20px;
+    transition: transform 0.2s ease;
+}
+
+.form-container:hover{
+	transform: scale(1.06);
+}
+/* Form elements */
+.form-container h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.form-container p {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.form-container label {
+    display: block;
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 5px;
+    font-weight: bold;
+
+}
+
+.form-container input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.form-container button {
+    width: 100%;
+    padding: 10px;
+    background-color: #0059b3;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-bottom: 8px;
+    transition: transform 0.2s ease;
+}
+
+.form-container button:hover {
+    background-color: #003f7f;
+    transform: scale(1.06);
+}
+
+.form-container a {
+    color: #0059b3;
+    text-decoration: none;
+}
+
+.form-container a:hover {
+    text-decoration: underline;
+}

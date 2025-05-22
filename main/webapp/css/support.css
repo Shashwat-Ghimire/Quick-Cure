@@ -1,0 +1,237 @@
+@charset "UTF-8";
+
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-color: #f5f5f5;
+    color: #333;
+}
+
+/* Main Content */
+.main-content {
+    margin-left: 250px;
+    padding: 20px;
+    transition: margin-left 0.3s ease;
+}
+
+/* Support Container */
+.support-container {
+    max-width: 600px;
+    margin: 40px auto;
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.support-container h2 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    color: #333;
+    transition: border-color 0.3s ease, transform 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    border-color: #0059b3;
+    outline: none;
+    transform: scale(1.02);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.form-group input:hover,
+.form-group textarea:hover {
+    transform: scale(1.01);
+}
+
+.submit-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 12px;
+    background-color: #0059b3;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.submit-btn:hover {
+    background-color: #003f7f;
+    transform: translateY(-2px);
+}
+
+.submit-btn i {
+    font-size: 16px;
+}
+
+.back-btn {
+    display: inline-block;
+    margin-bottom: 20px;
+    color: #0059b3;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.back-btn i {
+    margin-right: 5px;
+}
+
+.back  .back-btn:hover {
+    text-decoration: underline;
+}
+
+/* Toast Notification */
+.toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #28a745;
+    color: #fff;
+    padding: 15px 20px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    z-index: 1000;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.toast i {
+    font-size: 20px;
+}
+
+.toast span {
+    font-size: 14px;
+}
+
+/* Sidebar (Minimal styling, assuming sidebar.jsp provides most styles) */
+.sidebar {
+    background-color: #0059b3;
+    width: 250px;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    padding: 20px;
+    z-index: 1000;
+    transition: width 0.3s ease;
+    overflow: hidden;
+}
+
+.sidebar a {
+    color: #fff;
+    text-decoration: none;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.sidebar a:hover {
+    background-color: #003f7f;
+    transform: translateX(5px);
+}
+
+/* Mobile Navigation */
+.mobile-nav {
+    display: none;
+    background-color: #0059b3;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    padding: 10px;
+    text-align: center;
+}
+
+.nav-item {
+    color: #fff;
+    text-decoration: none;
+    margin: 0 15px;
+    font-size: 14px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .main-content {
+        margin-left: 60px;
+    }
+
+    .support-container {
+        margin: 20px;
+        padding: 20px;
+    }
+
+    .support-container h2 {
+        font-size: 20px;
+    }
+
+    .submit-btn {
+        font-size: 14px;
+    }
+
+    .toast {
+        top: 10px;
+        right: 10px;
+        padding: 10px 15px;
+    }
+
+    .toast span {
+        font-size: 12px;
+    }
+
+    .toast i {
+        font-size: 16px;
+    }
+
+    .mobile-nav {
+        display: flex;
+        justify-content: space-around;
+    }
+}

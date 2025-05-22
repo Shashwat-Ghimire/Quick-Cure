@@ -7,8 +7,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
 public class UserService {
+    private static final Logger LOGGER = Logger.getLogger(UserService.class.getName());
 
     // Register a new user without hashing
 	public boolean registerUser(User user) {
@@ -21,8 +24,9 @@ public class UserService {
 	            return false;  // Already taken
 	        }
 
-	        String sql = "INSERT INTO user (User_name, First_name, Last_name, User_password, User_address, User_email, User_phonenumber, User_role, User_gender) " +
-	                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?,?)";
+	        String sql = "INSERT INTO users (Username, First_name, Last_name, Users_password, Users_address, Users_email, Users_phone_number, Users_role, Users_gender) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
 
 	        PreparedStatement stmt = dbConn.prepareStatement(sql);
 	        stmt.setString(1, user.getUserName());
@@ -32,7 +36,7 @@ public class UserService {
 	        stmt.setString(5, user.getUserAddress());   
 	        stmt.setString(6, user.getUserEmail());
 	        stmt.setString(7, user.getUserPhone());
-	        stmt.setString(8, user.getRole());
+	        stmt.setString(8, user.getUserRole());
 	        stmt.setString(9, user.getUserGender());
 
 	        return stmt.executeUpdate() > 0;
@@ -55,32 +59,44 @@ public class UserService {
         Connection dbConn = null;
         try {
             dbConn = DbConfig.getDbConnection();
+            String sql = "SELECT Users_id, Username, First_name, Last_name, Users_email, " +
+                        "Users_phone_number, Users_gender, Users_role, Users_address " +
+                        "FROM users WHERE LOWER(Users_email) = LOWER(?) AND Users_password = ?";
+            
+            LOGGER.info("Attempting to login user with email: " + email);
+            
+            try (PreparedStatement stmt = dbConn.prepareStatement(sql)) {
+                stmt.setString(1, email.trim());
+                stmt.setString(2, password);
 
-            String sql = "SELECT * FROM user WHERE User_email = ? AND User_password = ?";
-            PreparedStatement stmt = dbConn.prepareStatement(sql);
-            stmt.setString(1, email);
-            stmt.setString(2, password); // Compare plaintext
-
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                User user = new User();
-                user.setUserName(rs.getString("User_name"));
-                user.setUserEmail(rs.getString("User_email"));
-                user.setUserPhone(rs.getString("User_phonenumber"));
-                user.setUserGender(rs.getString("User_gender"));
-                user.setUserRole(rs.getString("User_role"));
-                return user;
+                LOGGER.info("Executing login query...");
+                try (ResultSet rs = stmt.executeQuery()) {
+                    if (rs.next()) {
+                        User user = new User();
+                        user.setUserId(rs.getInt("Users_id"));
+                        user.setUserName(rs.getString("Username"));
+                        user.setUserEmail(rs.getString("Users_email"));
+                        user.setUserPhone(rs.getString("Users_phone_number"));
+                        user.setUserGender(rs.getString("Users_gender"));
+                        user.setUserRole(rs.getString("Users_role"));
+                        user.setFirstName(rs.getString("First_name"));
+                        user.setLastName(rs.getString("Last_name"));
+                        user.setUserAddress(rs.getString("Users_address"));
+                        
+                        LOGGER.info("User found with role: " + user.getUserRole() + ", ID: " + user.getUserId());
+                        return user;
+                    }
+                    LOGGER.warning("No matching user found for email: " + email);
+                }
             }
-
         } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Database error during login", e);
         } finally {
             if (dbConn != null) {
                 try {
                     dbConn.close();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    LOGGER.log(Level.SEVERE, "Error closing database connection", e);
                 }
             }
         }
@@ -92,7 +108,7 @@ public class UserService {
         try {
             dbConn = DbConfig.getDbConnection();
 
-            String sql = "SELECT User_id FROM user WHERE User_email = ? OR User_name = ?";
+            String sql = "SELECT Users_id FROM users WHERE Users_email = ? OR Username = ?";
             PreparedStatement stmt = dbConn.prepareStatement(sql);
             stmt.setString(1, email);
             stmt.setString(2, username);

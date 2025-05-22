@@ -1,33 +1,27 @@
 package com.quickcure.model;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Date;
 
 public class DashboardModel {
     private int totalOrders;
     private double totalRevenue;
     private int activeCustomers;
     private int lowStockItems;
-    private Map<String, Double> monthlySales;
-    private List<Product> topProducts;
-    private List<Order> recentOrders;
+    private Map<String, Double> monthlySales = new LinkedHashMap<>();
+    private List<Product> topProducts = new ArrayList<>();
+    private List<Order> recentOrders = new ArrayList<>();
 
-    public DashboardModel() {
-        this.monthlySales = new HashMap<>();
-        this.topProducts = new ArrayList<>();
-        this.recentOrders = new ArrayList<>();
-    }
-
-    // Getters and setters
+    // Getters and Setters
     public int getTotalOrders() {
         return totalOrders;
     }
 
     public void setTotalOrders(int totalOrders) {
-        this.totalOrders = totalOrders >= 0 ? totalOrders : 0;
+        this.totalOrders = totalOrders;
     }
 
     public double getTotalRevenue() {
@@ -35,7 +29,7 @@ public class DashboardModel {
     }
 
     public void setTotalRevenue(double totalRevenue) {
-        this.totalRevenue = totalRevenue >= 0 ? totalRevenue : 0.0;
+        this.totalRevenue = totalRevenue;
     }
 
     public int getActiveCustomers() {
@@ -43,7 +37,7 @@ public class DashboardModel {
     }
 
     public void setActiveCustomers(int activeCustomers) {
-        this.activeCustomers = activeCustomers >= 0 ? activeCustomers : 0;
+        this.activeCustomers = activeCustomers;
     }
 
     public int getLowStockItems() {
@@ -51,7 +45,7 @@ public class DashboardModel {
     }
 
     public void setLowStockItems(int lowStockItems) {
-        this.lowStockItems = lowStockItems >= 0 ? lowStockItems : 0;
+        this.lowStockItems = lowStockItems;
     }
 
     public Map<String, Double> getMonthlySales() {
@@ -59,7 +53,7 @@ public class DashboardModel {
     }
 
     public void setMonthlySales(Map<String, Double> monthlySales) {
-        this.monthlySales = monthlySales != null ? monthlySales : new HashMap<>();
+        this.monthlySales = monthlySales;
     }
 
     public List<Product> getTopProducts() {
@@ -67,7 +61,7 @@ public class DashboardModel {
     }
 
     public void setTopProducts(List<Product> topProducts) {
-        this.topProducts = topProducts != null ? topProducts : new ArrayList<>();
+        this.topProducts = topProducts;
     }
 
     public List<Order> getRecentOrders() {
@@ -75,14 +69,16 @@ public class DashboardModel {
     }
 
     public void setRecentOrders(List<Order> recentOrders) {
-        this.recentOrders = recentOrders != null ? recentOrders : new ArrayList<>();
+        this.recentOrders = recentOrders;
     }
 
-    // Inner class for Product
+    // Inner classes for Product and Order
     public static class Product {
         private int id;
         private String name;
         private int sales;
+        private String category; // Added to match your schema
+        private double price;   // Added to match your schema
 
         public int getId() {
             return id;
@@ -107,13 +103,31 @@ public class DashboardModel {
         public void setSales(int sales) {
             this.sales = sales;
         }
+
+        public String getCategory() {
+            return category;
+        }
+
+        public void setCategory(String category) {
+            this.category = category;
+        }
+
+        public double getPrice() {
+            return price;
+        }
+
+        public void setPrice(double price) {
+            this.price = price;
+        }
     }
 
-    // Inner class for Order
     public static class Order {
         private int id;
         private double totalAmount;
         private Date orderDate;
+        private String customerName; // Added to store customer information
+        private String status;      // Added to match your schema
+        private int itemCount;      // Added to store number of items
 
         public int getId() {
             return id;
@@ -137,6 +151,30 @@ public class DashboardModel {
 
         public void setOrderDate(Date orderDate) {
             this.orderDate = orderDate;
+        }
+
+        public String getCustomerName() {
+            return customerName;
+        }
+
+        public void setCustomerName(String customerName) {
+            this.customerName = customerName;
+        }
+
+        public String getStatus() {
+            return status;
+        }
+
+        public void setStatus(String status) {
+            this.status = status;
+        }
+
+        public int getItemCount() {
+            return itemCount;
+        }
+
+        public void setItemCount(int itemCount) {
+            this.itemCount = itemCount;
         }
     }
 }

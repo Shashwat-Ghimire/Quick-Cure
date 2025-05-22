@@ -44,6 +44,36 @@ public class FrontController extends HttpServlet {
             case "/orders.do":
             	request.getRequestDispatcher("/WEB-INF/pages/orders.jsp").forward(request, response);
                 break;
+            case "/home.do":
+            	request.getRequestDispatcher("/WEB-INF/pages/Home.jsp").forward(request, response);
+                break;
+            case "/mycart.do":
+            	request.getRequestDispatcher("/WEB-INF/pages/mycart.jsp").forward(request, response);
+                break;
+            case "/addproducts.do":
+            	request.getRequestDispatcher("/WEB-INF/pages/addproducts.jsp").forward(request, response);
+                break;
+            case "/removeproducts.do":
+            	request.getRequestDispatcher("/WEB-INF/pages/removeproducts.jsp").forward(request, response);
+                break;
+            case "/support.do":
+            	request.getRequestDispatcher("/WEB-INF/pages/support.jsp").forward(request, response);
+                break;
+            case "/productdescription.do":
+            	request.getRequestDispatcher("/WEB-INF/pages/productdescription.jsp").forward(request, response);
+                break;
+            case "/About.do":
+            	request.getRequestDispatcher("/WEB-INF/pages/about.jsp").forward(request, response);
+                break;
+            case "/updateproducts.do":
+            	request.getRequestDispatcher("/WEB-INF/pages/updateproducts.jsp").forward(request, response);
+                break;
+            case "/customerprofile.do":
+            	request.getRequestDispatcher("/WEB-INF/pages/customerprofile.jsp").forward(request, response);
+                break;
+            case "/cart.do":
+                request.getRequestDispatcher("/WEB-INF/pages/mycart.jsp").forward(request, response);
+                break;
             default:
                 response.sendError(HttpServletResponse.SC_NOT_FOUND);
                 break;

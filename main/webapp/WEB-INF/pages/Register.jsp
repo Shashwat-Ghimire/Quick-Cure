@@ -1,12 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register Account</title>
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/Register.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/register.css">
 </head>
 <body>
     <div class="container">
@@ -21,7 +22,7 @@
             <div class="form-container">
                 <h2>Create an account</h2>
                 <p class="subtitle">Enter your information to get started with QuickCure</p>
-                <form id="registrationForm" action="${pageContext.request.contextPath}/RegisterController" method="post">
+                <form id="registrationForm" action="${pageContext.request.contextPath}/register.do" method="post">
                     <!-- First Name and Last Name side by side -->
                     <div class="form-row">
                         <div class="form-group">

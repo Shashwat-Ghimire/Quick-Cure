@@ -13,12 +13,18 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-@WebServlet(asyncSupported = true, urlPatterns = { "/RegisterController" })
+@WebServlet("/register.do")
 public class RegisterController extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     public RegisterController() {
         super();
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        request.getRequestDispatcher("/WEB-INF/pages/Register.jsp").forward(request, response);
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -40,31 +46,34 @@ public class RegisterController extends HttpServlet {
         // Form validations
         if (firstName == null || firstName.trim().isEmpty()) {
             errors.put("firstName", "First name is required.");
-        } else if (!firstName.matches("[A-Za-z]{2,}")) {
-            errors.put("firstName", "First name must contain only letters.");
+        } else if (!firstName.matches("[A-Za-z\\s]{2,}")) {
+            errors.put("firstName", "First name must contain only letters and spaces.");
         }
 
         if (lastName == null || lastName.trim().isEmpty()) {
             errors.put("lastName", "Last name is required.");
-        } else if (!lastName.matches("[A-Za-z]{2,}")) {
-            errors.put("lastName", "Last name must contain only letters.");
+        } else if (!lastName.matches("[A-Za-z\\s]{2,}")) {
+            errors.put("lastName", "Last name must contain only letters and spaces.");
         }
 
         if (username == null || username.trim().isEmpty()) {
             errors.put("username", "Username is required.");
-        } else if (!username.matches("[A-Za-z]{2,}")) {
-            errors.put("username", "Username must contain only letters.");
+        } else if (!username.matches("[A-Za-z0-9_]{3,20}")) {
+            errors.put("username", "Username must be 3-20 characters and can contain letters, numbers, and underscores.");
         }
-        if (address == null ) {
+
+        if (address == null || address.trim().isEmpty()) {
             errors.put("address", "Please enter your address");
         }
-        if (gender == null) {
-            errors.put("gender", "Please select a gender.");
+
+        if (gender == null || gender.trim().isEmpty() || 
+            (!gender.equals("Male") && !gender.equals("Female"))) {
+            errors.put("gender", "Please select a valid gender.");
         }
 
         if (email == null || email.trim().isEmpty()) {
             errors.put("email", "Email is required.");
-        } else if (!email.matches("^[\\w.-]+@[\\w.-]+\\.[A-Za-z]{2,6}$")) {
+        } else if (!email.matches("^[\\w.-]+@[\\w.-]+\\.[A-Za-z]{2,}$")) {
             errors.put("email", "Invalid email address.");
         }
 
@@ -77,16 +86,12 @@ public class RegisterController extends HttpServlet {
         if (password == null || password.length() < 6) {
             errors.put("password", "Password must be at least 6 characters.");
         }
-        
-        if (address == null || address.trim().isEmpty()) {
-            errors.put("address", "Please enter your address");
-        }
-        
+
         if (confirmPassword == null || !confirmPassword.equals(password)) {
             errors.put("retypePassword", "Passwords do not match.");
         }
 
-        if (terms == null) {
+        if (terms == null || !terms.equals("on")) {
             errors.put("terms", "You must agree to the terms.");
         }
 
@@ -99,13 +104,13 @@ public class RegisterController extends HttpServlet {
 
         // Create user object
         User user = new User();
-        user.setFirstName(firstName);
-        user.setLastName(lastName);
-        user.setUserName(username);
-        user.setUserAddress(address);
+        user.setFirstName(firstName.trim());
+        user.setLastName(lastName.trim());
+        user.setUserName(username.trim());
+        user.setUserAddress(address.trim());
         user.setUserGender(gender);
-        user.setUserEmail(email);
-        user.setUserPhone(phone);
+        user.setUserEmail(email.trim().toLowerCase());
+        user.setUserPhone(phone.trim());
         user.setUserPassword(password);  // Hashing will be handled in service layer
         user.setUserRole("user");        // Default role
 
@@ -118,7 +123,7 @@ public class RegisterController extends HttpServlet {
             request.getRequestDispatcher("/WEB-INF/pages/Register.jsp").forward(request, response);
         } else {
             // Redirect on success
-        	  response.sendRedirect("login.do");
+            response.sendRedirect(request.getContextPath() + "/login.do");
         }
     }
 }
