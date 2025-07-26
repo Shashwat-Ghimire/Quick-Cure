@@ -30,7 +30,7 @@
 | Backend       | Java EE (Servlets, JSP)  |
 | Database      | MySQL                    |
 | Server        | Apache Tomcat            |
-| IDE           | Eclipse / IntelliJ IDEA  |
+| IDE           | Eclipse                  |
 
 ---
 
